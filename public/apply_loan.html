@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for a Loan</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Apply for a Loan</h1>
+    </header>
+    <section>
+        <h2>Loan Application Form</h2>
+        <form action="submit_loan.html" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="cows">Number of cows:</label>
+            <input type="number" id="cows" name="cows" required>
+            <br>
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <br>
+            <label for="county">County:</label>
+            <input type="text" id="county" name="county" required>
+            <br>
+            <button type="submit">Submit Application</button>
+        </form>
+    </section>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="payment.html">Make a Payment</a></li>
+        </ul>
+    </nav>
+    <footer>
+        <p>&copy; 2024 HomeBiogas for Farmers. All rights reserved.</p>
+    </footer>
+    <script src="js/scripts.js"></script>
+
+</body>
+</html>
