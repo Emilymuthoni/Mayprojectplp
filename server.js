@@ -45,7 +45,7 @@ app.post('/submit_payment', (req, res) => {
     db.query(paymentQuery, [amount, card, expiry, cvv], (err, paymentResults) => {
         if (err) {
             console.error('Error inserting payment:', err);
-            return res.status(500).send('Database error');
+            return res.status(500).send('Database error: ' + err.message);
         }
 
         // Get the last inserted payment ID
@@ -58,11 +58,27 @@ app.post('/submit_payment', (req, res) => {
         db.query(transactionQuery, [paymentId, amount, transactionType], (err) => {
             if (err) {
                 console.error('Error inserting transaction:', err);
-                return res.status(500).send('Database error');
+                return res.status(500).send('Database error: ' + err.message);
             }
 
             res.send('Payment successful!');
         });
+    });
+});
+
+// Handle POST request for loan submission
+app.post('/submit_loan', (req, res) => {
+    const { customer_id, loan_amount, loan_date, repayment_term } = req.body;
+    console.log(`Loan details received: Customer ID: ${customer_id}, Loan Amount: ${loan_amount}, Loan Date: ${loan_date}, Repayment Term: ${repayment_term}`);
+
+    // Insert loan details into the database
+    const query = 'INSERT INTO loan_details (customer_id, loan_amount, loan_date, repayment_term) VALUES (?, ?, ?, ?)';
+    db.query(query, [customer_id, loan_amount, loan_date, repayment_term], (err, results) => {
+        if (err) {
+            console.error('Error inserting loan details:', err.message);
+            return res.status(500).send('Database error: ' + err.message);
+        }
+        res.send('Loan details submitted successfully!');
     });
 });
 
