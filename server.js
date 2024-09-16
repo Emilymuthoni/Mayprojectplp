@@ -1,88 +1,190 @@
-// server.js
 const express = require('express');
 const path = require('path');
+const session = require('express-session');
 const mysql = require('mysql2');
+const bcrypt = require('bcrypt');
 
 const app = express();
-const PORT = 3000;
+const port = 3000;
 
-// Middleware to parse JSON and URL-encoded requests
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Create a MySQL connection to the CG_EM database
+// Database connection
 const db = mysql.createConnection({
-    host: 'localhost', // Change this if your MySQL server is on a different host
-    user: 'root', // Replace with your MySQL username
-    password: 'Emily*19', // Replace with your MySQL password
-    database: 'CG_EM' // Connect to the CG_EM database
+    host: 'localhost',
+    user: 'root',
+    password: 'Emily*19', // Your MySQL password
+    database: 'CG_EM',
 });
 
-// Connect to the database
 db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
-    }
+    if (err) throw err;
     console.log('Connected to MySQL database CG_EM');
 });
 
-// Define the homepage route
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+}));
+
+// Middleware to check if user is logged in
+function isAuthenticated(req, res, next) {
+    if (req.session.userId) {
+        return next();
+    }
+    res.redirect('/login');
+}
+
+// Middleware to check if user is admin
+function isAdmin(req, res, next) {
+    if (req.session.role === 'admin') {
+        return next();
+    }
+    res.status(403).send('Access denied');
+}
+
+// Serve HTML files
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Ensure you have an index.html in the 'public' directory
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Define the payment submission route
-app.post('/submit_payment', (req, res) => {
-    const { amount, card, expiry, cvv } = req.body;
-    console.log(`Payment received: Amount: ${amount}, Card: ${card}, Expiry: ${expiry}, CVV: ${cvv}`);
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
 
-    // Insert payment details into the payments table
-    const paymentQuery = 'INSERT INTO payments (amount, card, expiry, cvv) VALUES (?, ?, ?, ?)';
-    db.query(paymentQuery, [amount, card, expiry, cvv], (err, paymentResults) => {
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/apply_loan', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'apply_loan.html'));
+});
+
+app.get('/payment', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'payment.html'));
+});
+
+app.get('/admin_dashboard', isAuthenticated, isAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin_dashboard.html'));
+});
+
+// POST /register
+app.post('/register', (req, res) => {
+    const { name, id_number, password } = req.body;
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    const query = 'INSERT INTO customers (name, id_number, password, role) VALUES (?, ?, ?, ?)';
+    db.query(query, [name, id_number, hashedPassword, 'client'], (err, results) => {
         if (err) {
-            console.error('Error inserting payment:', err);
-            return res.status(500).send('Database error: ' + err.message);
+            console.error('Error inserting customer:', err.message);
+            return res.status(500).send('Error registering customer');
         }
-
-        // Get the last inserted payment ID
-        const paymentId = paymentResults.insertId;
-
-        // Insert transaction details into the transactions table
-        const transactionQuery = 'INSERT INTO transactions (payment_id, transaction_amount, transaction_type) VALUES (?, ?, ?)';
-        const transactionType = 'Payment'; // Adjust this based on your application logic
-
-        db.query(transactionQuery, [paymentId, amount, transactionType], (err) => {
-            if (err) {
-                console.error('Error inserting transaction:', err);
-                return res.status(500).send('Database error: ' + err.message);
-            }
-
-            res.send('Payment successful!');
-        });
+        res.redirect('/login');
     });
 });
 
-// Handle POST request for loan submission
-app.post('/submit_loan', (req, res) => {
-    const { customer_id, loan_amount, loan_date, repayment_term } = req.body;
-    console.log(`Loan details received: Customer ID: ${customer_id}, Loan Amount: ${loan_amount}, Loan Date: ${loan_date}, Repayment Term: ${repayment_term}`);
+// POST /login
+app.post('/login', (req, res) => {
+    const { id_number, password } = req.body;
 
-    // Insert loan details into the database
-    const query = 'INSERT INTO loan_details (customer_id, loan_amount, loan_date, repayment_term) VALUES (?, ?, ?, ?)';
-    db.query(query, [customer_id, loan_amount, loan_date, repayment_term], (err, results) => {
+    const query = 'SELECT * FROM customers WHERE id_number = ?';
+    db.query(query, [id_number], (err, results) => {
         if (err) {
-            console.error('Error inserting loan details:', err.message);
-            return res.status(500).send('Database error: ' + err.message);
+            console.error('Error querying database:', err.message);
+            return res.status(500).send('Error logging in');
         }
-        res.send('Loan details submitted successfully!');
+
+        if (results.length === 0) {
+            return res.status(401).send('Invalid ID number or password');
+        }
+
+        const user = results[0];
+        if (bcrypt.compareSync(password, user.password)) {
+            req.session.userId = user.id_number;
+            req.session.role = user.role; // Store user role in session
+            res.redirect(user.role === 'admin' ? '/admin_dashboard' : '/apply_loan');
+        } else {
+            res.status(401).send('Invalid ID number or password');
+        }
     });
 });
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+// POST /submit_loan (client-only)
+app.post('/submit_loan', isAuthenticated, (req, res) => {
+    const { loan_amount, loan_date, repayment_term } = req.body;
+
+    const query = 'INSERT INTO loans (customer_id, loan_amount, loan_date, repayment_term) VALUES (?, ?, ?, ?)';
+    db.query(query, [req.session.userId, loan_amount, loan_date, repayment_term], (err, results) => {
+        if (err) {
+            console.error('Error inserting loan:', err.message);
+            return res.status(500).send('Error applying for loan');
+        }
+        res.redirect('/');
+    });
+});
+
+// POST /submit_payment (client-only)
+app.post('/submit_payment', isAuthenticated, (req, res) => {
+    const { amount, card_number, expiry_date, cvv } = req.body;
+
+    // Payment processing logic here
+    console.log(`Processing payment of ${amount} for card ${card_number}`);
+
+    res.redirect('/');
+});
+
+// Admin-only route to update customer details
+app.post('/update-customer', isAuthenticated, isAdmin, (req, res) => {
+    const { customer_id, county, constituency, salesperson, credit_officer, contract_number, phone_number, number_of_cows } = req.body;
+
+    const query = 'UPDATE customers SET county = ?, constituency = ?, salesperson = ?, credit_officer = ?, contract_number = ?, phone_number = ?, number_of_cows = ? WHERE id_number = ?';
+    db.query(query, [county, constituency, salesperson, credit_officer, contract_number, phone_number, number_of_cows, customer_id], (err, results) => {
+        if (err) {
+            console.error('Error updating customer:', err.message);
+            return res.status(500).send('Error updating customer details');
+        }
+        res.send('Customer details updated successfully');
+    });
+});
+
+// Admin-only routes to get data
+app.get('/admin/customers', isAuthenticated, isAdmin, (req, res) => {
+    const query = 'SELECT * FROM customers';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error retrieving customers:', err.message);
+            return res.status(500).send('Error retrieving customers');
+        }
+        res.json(results);
+    });
+});
+
+app.get('/admin/loans', isAuthenticated, isAdmin, (req, res) => {
+    const query = 'SELECT * FROM loans';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error retrieving loans:', err.message);
+            return res.status(500).send('Error retrieving loans');
+        }
+        res.json(results);
+    });
+});
+
+app.get('/admin/payments', isAuthenticated, isAdmin, (req, res) => {
+    const query = 'SELECT * FROM payments';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error retrieving payments:', err.message);
+            return res.status(500).send('Error retrieving payments');
+        }
+        res.json(results);
+    });
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });

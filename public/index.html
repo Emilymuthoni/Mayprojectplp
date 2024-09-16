@@ -3,15 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeBiogas for Farmers</title>
+    <title>HomeBiogas - Welcome</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <header>
+        <img src="images/logo.jpg" alt="Company Logo" class="logo">
         <h1>WELCOME TO THE FUTURE OF BIOGAS</h1>
     </header>
-    <section>
-        <h2>HomeBiogas for Farmers</h2>
+
+    <nav>
+        <ul>
+            <li><a href="/register">Register</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/apply_loan">Apply for a Loan</a></li>
+            <li><a href="/payment">Make a Payment</a></li>
+        </ul>
+    </nav>
+
+    <main>
         <p>The NEW HomeBiogas system turns your cow manure into clean energy and liquid fertilizer thanks to our advanced Israeli technology.</p>
         <p>Say goodbye to firewood and hello to HomeBiogas. Our system provides you with:</p>
         <ul>
@@ -20,50 +30,13 @@
             <li>100 liters of organic fertilizer</li>
             <li>5 years warranty</li>
         </ul>
-    </section>
-    <nav>
-        <ul>
-            <li><a href="#apply-loan">Apply for a Loan</a></li>
-            <li><a href="#make-payment">Make a Payment</a></li>
-        </ul>
-    </nav>
-    
-    <!-- Apply for a Loan Section -->
-    <section id="apply-loan">
-        <h2>Apply for a Loan</h2>
-        <form action="/submit_loan" method="post">
-            <label for="customer_id">Customer ID:</label>
-            <input type="text" id="customer_id" name="customer_id" required><br>
-            <label for="loan_amount">Loan Amount:</label>
-            <input type="number" id="loan_amount" name="loan_amount" step="0.01" required><br>
-            <label for="loan_date">Loan Date:</label>
-            <input type="date" id="loan_date" name="loan_date" required><br>
-            <label for="repayment_term">Repayment Term (months):</label>
-            <input type="number" id="repayment_term" name="repayment_term" required><br>
-            <button type="submit">Apply for Loan</button>
-        </form>
-    </section>
+    </main>
 
-    <!-- Make a Payment Section -->
-    <section id="make-payment">
-        <h2>Make a Payment</h2>
-        <form action="/submit_payment" method="post">
-            <label for="amount">Amount:</label>
-            <input type="number" id="amount" name="amount" step="0.01" required><br>
-            <label for="card">Card Number:</label>
-            <input type="text" id="card" name="card" required><br>
-            <label for="expiry">Expiry Date:</label>
-            <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required><br>
-            <label for="cvv">CVV:</label>
-            <input type="text" id="cvv" name="cvv" required><br>
-            <button type="submit">Submit Payment</button>
-        </form>
-    </section>
-
-    <script src="js/scripts.js"></script>
     <footer>
-        <p>&copy; 2024 HomeBiogas for Farmers. All rights reserved.</p>
+        <p>© 2024 HomeBiogas for Farmers. All rights reserved.</p>
     </footer>
 
+    <div class="background-image"></div> <!-- Background image -->
+    <script defer src="js/script.js"></script>
 </body>
 </html>

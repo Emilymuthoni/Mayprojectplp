@@ -1,0 +1,208 @@
+/* General body styles */
+body {
+    background-color: #F7F600; /* Yellow background */
+    color: #000; /* Black text color */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* Ensure body covers full viewport height */
+    position: relative; /* Required for positioning the background image */
+    padding-bottom: 60px; /* Add padding to bottom to prevent overlap with footer */
+}
+
+/* Header styles */
+header {
+    background-color: transparent; /* Transparent background for header */
+    color: #000; /* Black text color */
+    text-align: center;
+    padding: 15px; /* Reduced padding */
+    position: relative;
+    z-index: 2; /* Ensure header is on top of background image */
+}
+
+/* Logo styles */
+header .logo {
+    height: 40px; /* Adjusted logo height */
+    position: absolute;
+    top: 15px; /* Adjusted logo position */
+    left: 15px; /* Adjusted logo position */
+    z-index: 2; /* Ensure logo is on top of background image */
+}
+
+/* Navigation styles */
+nav {
+    background-color: transparent; /* Transparent background for navigation */
+    color: #FFF; /* White text color */
+    text-align: center;
+    padding: 8px 0; /* Reduced padding */
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2; /* Ensure navigation is on top of background image */
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav li {
+    margin: 0 10px; /* Reduced margin */
+}
+
+nav a {
+    color: #FFF; /* White text color for links */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Main content styles */
+main {
+    padding: 15px; /* Reduced padding */
+    max-width: 750px; /* Adjusted width */
+    margin: 0 auto;
+    position: relative; /* Required for positioning content on top of background image */
+    z-index: 2; /* Ensure main content is on top of background image */
+}
+
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px; /* Reduced margin */
+}
+
+label {
+    margin: 5px 0; /* Reduced margin */
+}
+
+input, select {
+    margin-bottom: 8px; /* Reduced margin */
+    padding: 8px; /* Reduced padding */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #000; /* Black background for button */
+    color: #FFF; /* White text color */
+    padding: 8px 16px; /* Reduced padding */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* Reduced font size */
+    margin-top: 10px; /* Space above button */
+}
+
+button:hover {
+    background-color: #333; /* Darker black on hover */
+}
+
+/* Links */
+a {
+    color: #000; /* Black text color for links */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Footer styles */
+footer {
+    background-color: #000; /* Black background for footer */
+    color: #FFF; /* White text color */
+    text-align: center;
+    padding: 8px; /* Reduced padding */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Background image styling */
+.background-image {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%; /* Adjust the width to cover 3/4 of the page */
+    height: 50%; /* Adjust the height to ensure coverage */
+    background-image: url('../images/background.jpg'); /* Adjust path to image */
+    background-size: cover; /* Ensure the image covers the element */
+    background-position: bottom right; /* Position image at bottom right */
+    z-index: 1; /* Ensure the image is behind other content */
+}
+
+/* Utility classes */
+.text-center {
+    text-align: center;
+}
+
+.mt-15 {
+    margin-top: 15px; /* Adjusted utility class for top margin */
+}
+
+.mb-15 {
+    margin-bottom: 15px; /* Adjusted utility class for bottom margin */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav li {
+        margin: 8px 0; /* Reduced margin for smaller screens */
+    }
+
+    main {
+        width: 90%;
+    }
+
+    header .logo {
+        position: relative;
+        margin: 0 auto 15px; /* Adjusted margin */
+    }
+
+    .background-image {
+        width: 100%; /* Ensure the image covers full width on smaller screens */
+        height: 50%; /* Adjust height for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    header .logo {
+        height: 30px; /* Further reduced logo height */
+        top: 10px;
+        left: 10px;
+    }
+
+    header h1 {
+        font-size: 18px; /* Further reduced font size for very small screens */
+    }
+
+    main {
+        padding: 10px; /* Further reduced padding */
+    }
+
+    input, select, button {
+        padding: 6px; /* Further reduced padding */
+    }
+
+    button {
+        font-size: 12px; /* Further reduced font size */
+        margin-top: 8px; /* Adjusted space above button */
+    }
+
+    .background-image {
+        width: 100%; /* Ensure full width on very small screens */
+        height: 60%; /* Adjust height for very small screens */
+    }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <img src="images/logo.jpg" alt="Company Logo" class="logo">
+        <h1>Login</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="/register">Register</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/apply_loan">Apply for a Loan</a></li>
+            <li><a href="/payment">Make a Payment</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <form action="/login" method="post">
+            <label for="id_number">ID Number:</label>
+            <input type="text" id="id_number" name="id_number" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
+
+            <button type="submit">Login</button>
+        </form>
+        <a href="/register" class="register-link">Don't have an account? Register</a>
+    </main>
+
+    <footer>
+        <p>© 2024 HomeBiogas for Farmers. All rights reserved.</p>
+    </footer>
+    <script defer src="js/script.js"></script>
+</body>
+</html>

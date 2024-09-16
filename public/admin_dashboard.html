@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="js/admin_dashboard.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin_dashboard">Dashboard</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Customer Management</h2>
+        <button id="load-customers">Load Customers</button>
+        <div id="customer-list"></div>
+
+        <h2>Loan Management</h2>
+        <button id="load-loans">Load Loans</button>
+        <div id="loan-list"></div>
+
+        <h2>Payment Management</h2>
+        <button id="load-payments">Load Payments</button>
+        <div id="payment-list"></div>
+    </main>
+</body>
+</html>
